@@ -6,6 +6,10 @@ I'm taking [CS50's Introduction to Artificial Intelligence with Python](https://
 
 feel free to download and run each of them :smiley:
 
-# License
+## Projects
+
+* [tic-tac-toe](https://github.com/Amirerfan/AI/tree/master/tictactoe) - using minimax algorithm
+
+### License
 
 This repository is released under the [MIT license](https://opensource.org/licenses/MIT). In short, this means you are free to use this software in any personal, open-source or commercial projects. Attribution is optional but appreciated.
