@@ -9,6 +9,7 @@ feel free to download and run each of them :smiley:
 ## Projects
 
 * [tic-tac-toe](https://github.com/Amirerfan/AI/tree/master/tictactoe) - using minimax algorithm
+* [Six Degrees of Kevin Bacon game](https://github.com/Amirerfan/AI/tree/master/degrees) - using BFS algorithm
 
 ### License
 
