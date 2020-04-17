@@ -88,40 +88,32 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-
     fringe = util.Stack()
     fringe.push((problem.getStartState(), None, None))
 
     visited_nodes = []
 
     while(not fringe.isEmpty()):
-        state = fringe.pop()
-        visited_nodes.append(state[0])
+        node = fringe.pop()
+        state, move, father = node
+        visited_nodes.append(state)
 
-        if(problem.isGoalState(state[0])):
+        if(problem.isGoalState(state)):
             path = []
-            while(state[1] != None):
-                path.insert(0, state[1])
-                state = state[2]
+            while(father != None):
+                path.insert(0, move)
+                state, move, father = father
+            
             return path
 
-        for successor in problem.getSuccessors(state[0]):
-            if(not successor[0] in visited_nodes):
-                fringe.push((successor[0], successor[1], state))
-
-    raise Exception("problem has no answer")
+        for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
+            if(not succ_state in visited_nodes):
+                fringe.push((succ_state, succ_move, node))
 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
 
     fringe = util.Queue()
     fringe.push((problem.getStartState(), None, None))
@@ -129,53 +121,47 @@ def breadthFirstSearch(problem):
     visited_nodes = []
 
     while(not fringe.isEmpty()):
-        state = fringe.pop()
-        visited_nodes.append(state[0])
+        node = fringe.pop()
+        state, move, father = node
 
-        if(problem.isGoalState(state[0])):
+        if(problem.isGoalState(state)):
             path = []
-            while(state[1] != None):
-                path.insert(0, state[1])
-                state = state[2]
+            while(father != None):
+                path.insert(0, move)
+                state, move, father = father
+
             return path
 
-        for successor in problem.getSuccessors(state[0]):
-            if(not successor[0] in visited_nodes):
-                fringe.push((successor[0], successor[1], state))
+        for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
+            if(not succ_state in visited_nodes):
+                visited_nodes.append(succ_state)
+                fringe.push((succ_state, succ_move, node))
     
-    raise Exception("problem has no answer")
-
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-
     fringe = util.PriorityQueue()
     fringe.push((problem.getStartState(), None, 0, None), 0)
 
     visited_nodes = []
 
     while(not fringe.isEmpty()):
-        state = fringe.pop()
-        visited_nodes.append(state[0])
-
-        if(problem.isGoalState(state[0])):
+        node = fringe.pop()
+        state, move, cost, father = node
+        
+        if(problem.isGoalState(state)):
             path = []
-            print(state)
-            while(state[1] != None):
-                path.insert(0, state[1])
-                state = state[3]
+            while(father != None):
+                path.insert(0, move)
+                state, move, cost, father = father
             return path
 
-        for successor in problem.getSuccessors(state[0]):
-            if(not successor[0] in visited_nodes):
-                fringe.push((successor[0], successor[1], state[2]+successor[2], state), state[2]+successor[2])
+        for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
+            if(not succ_state in visited_nodes):
+                visited_nodes.append(succ_state)
+                fringe.push((succ_state, succ_move, cost+succ_cost, node), cost+succ_cost)
     
-    raise Exception("problem has no answer")
-
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
@@ -187,32 +173,27 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-
     fringe = util.PriorityQueue()
     fringe.push((problem.getStartState(), None, 0, None), heuristic(problem.getStartState(), problem))
 
     visited_nodes = []
 
     while(not fringe.isEmpty()):
-        state = fringe.pop()
-        visited_nodes.append(state[0])
+        node = fringe.pop()
+        state, move, cost, father = node
 
-        if(problem.isGoalState(state[0])):
+        if(problem.isGoalState(state)):
             path = []
-            print(state)
-            while(state[1] != None):
-                path.insert(0, state[1])
-                state = state[3]
+            while(father != None):
+                path.insert(0, move)
+                state, move, cost, father = father
+            
             return path
 
-        for successor in problem.getSuccessors(state[0]):
-            if(not successor[0] in visited_nodes):
-                fringe.push((successor[0], successor[1], state[2]+successor[2], state), heuristic(successor[0], problem)+successor[2])
-    
-    raise Exception("problem has no answer")
+        for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
+            if(not succ_state in visited_nodes):
+                visited_nodes.append(succ_state)
+                fringe.push((succ_state, succ_move, cost+succ_cost, node), cost+succ_cost+heuristic(succ_state, problem))
 
 
 # Abbreviations
