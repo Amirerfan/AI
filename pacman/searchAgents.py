@@ -490,8 +490,6 @@ def foodHeuristic(state, problem):
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
 
-    return len(foodGrid.asList())
-
     eaten = []
     distance = 0
 
@@ -500,14 +498,15 @@ def foodHeuristic(state, problem):
         
         for food in foodGrid.asList():
             if(not food in eaten and (food != position)):
-                distance_to_food = ((position[0] - food[0]) ** 2 + (position[1] - food[1]) ** 2) ** 0.5  # euclidean distance
+                # distance_to_food = ((position[0] - food[0]) ** 2 + (position[1] - food[1]) ** 2) ** 0.5  # euclidean distance
                 # distance_to_food = abs(position[0] - food[0]) + abs(position[1] - food[1])  # manhattan distance
+                distance_to_food = mazeDistance(position, food, problem.startingGameState)  # maze distance
 
                 if(distance_to_food < min_distance):
                     min_distance = distance_to_food
                     nearest_food = food
         
-        if(min_distance != 1000):
+        if(min_distance != 1000000):
             distance += min_distance
     
         position = food
