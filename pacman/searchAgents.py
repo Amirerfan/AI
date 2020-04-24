@@ -374,9 +374,9 @@ def cornersHeuristic(state, problem):
     processed_corners = set(copy.deepcopy(expanded_corners))
     
     distance = 0
-    nearest_corner = position 
+    nearest_corner = None 
 
-    for i in range(4):
+    for i in range(4-len(processed_corners)):
         min_distance = 1000
         
         for corner in corners:
@@ -388,7 +388,7 @@ def cornersHeuristic(state, problem):
                     min_distance = distance_to_corner
                     nearest_corner = corner
         
-        processed_corners.add(corner)
+        processed_corners.add(position)
         position = corner
 
         if(min_distance != 1000):

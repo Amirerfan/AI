@@ -18,7 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
-
+import copy
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -89,26 +89,27 @@ def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
 
     fringe = util.Stack()
-    fringe.push((problem.getStartState(), None, None))
+    fringe.push((problem.getStartState(), None, []))
 
     visited_nodes = []
 
     while(not fringe.isEmpty()):
         node = fringe.pop()
-        state, move, father = node
+        state, move, path = node
+
+        if (state in visited_nodes):
+            continue
+
         visited_nodes.append(state)
 
         if(problem.isGoalState(state)):
-            path = []
-            while(father != None):
-                path.insert(0, move)
-                state, move, father = father
-            
             return path
 
         for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
             if(not succ_state in visited_nodes):
-                fringe.push((succ_state, succ_move, node))
+                succ_path = copy.deepcopy(path)
+                succ_path.append(succ_move)
+                fringe.push((succ_state, succ_move, succ_path))
 
 
 def breadthFirstSearch(problem):
@@ -116,51 +117,54 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
 
     fringe = util.Queue()
-    fringe.push((problem.getStartState(), None, None))
-
+    fringe.push((problem.getStartState(), None, []))
     visited_nodes = []
-
+    
     while(not fringe.isEmpty()):
         node = fringe.pop()
-        state, move, father = node
+        state, move, path = node
+
+        if (state in visited_nodes):
+            continue
+
+        visited_nodes.append(state)
 
         if(problem.isGoalState(state)):
-            path = []
-            while(father != None):
-                path.insert(0, move)
-                state, move, father = father
-
             return path
 
         for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
             if(not succ_state in visited_nodes):
-                visited_nodes.append(succ_state)
-                fringe.push((succ_state, succ_move, node))
+                succ_path = copy.deepcopy(path)
+                succ_path.append(succ_move)
+                fringe.push((succ_state, succ_move, succ_path))
+
     
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     
     fringe = util.PriorityQueue()
-    fringe.push((problem.getStartState(), None, 0, None), 0)
+    fringe.push((problem.getStartState(), None, 0, []), 0)
 
     visited_nodes = []
 
     while(not fringe.isEmpty()):
         node = fringe.pop()
-        state, move, cost, father = node
+        state, move, cost, path = node
+        
+        if(state in visited_nodes):
+            continue 
+
+        visited_nodes.append(state)
         
         if(problem.isGoalState(state)):
-            path = []
-            while(father != None):
-                path.insert(0, move)
-                state, move, cost, father = father
             return path
 
         for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
             if(not succ_state in visited_nodes):
-                visited_nodes.append(succ_state)
-                fringe.push((succ_state, succ_move, cost+succ_cost, node), cost+succ_cost)
+                succ_path = copy.deepcopy(path)
+                succ_path.append(succ_move)
+                fringe.push((succ_state, succ_move, cost+succ_cost, succ_path), cost+succ_cost)
     
 def nullHeuristic(state, problem=None):
     """
@@ -174,26 +178,27 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
 
     fringe = util.PriorityQueue()
-    fringe.push((problem.getStartState(), None, 0, None), heuristic(problem.getStartState(), problem))
+    fringe.push((problem.getStartState(), None, 0, []), heuristic(problem.getStartState(), problem))
 
     visited_nodes = []
 
     while(not fringe.isEmpty()):
         node = fringe.pop()
-        state, move, cost, father = node
+        state, move, cost, path = node
+
+        if(state in visited_nodes):
+            continue 
+
+        visited_nodes.append(state)
 
         if(problem.isGoalState(state)):
-            path = []
-            while(father != None):
-                path.insert(0, move)
-                state, move, cost, father = father
-            
             return path
 
         for succ_state, succ_move, succ_cost in problem.getSuccessors(state):
             if(not succ_state in visited_nodes):
-                visited_nodes.append(succ_state)
-                fringe.push((succ_state, succ_move, cost+succ_cost, node), cost+succ_cost+heuristic(succ_state, problem))
+                succ_path = copy.deepcopy(path)
+                succ_path.append(succ_move)
+                fringe.push((succ_state, succ_move, cost+succ_cost, succ_path), cost+succ_cost+heuristic(succ_state, problem))
 
 
 # Abbreviations
